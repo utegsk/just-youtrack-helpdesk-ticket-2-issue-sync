@@ -8,7 +8,6 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "bun run scripts/build.ts",
-    "upload": "bun run scripts/build.ts && bun run scripts/upload.ts",
     "prezip": "rm -rf helpdesk-sync.zip",
     "zip": "bun run scripts/build.ts --zip"
   },
