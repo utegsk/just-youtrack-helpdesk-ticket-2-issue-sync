@@ -1,16 +1,16 @@
 {
   "name": "just-youtrack-helpdesk-ticket-2-issue-sync",
   "description": "Auto-create and sync linked dev issues from helpdesk tickets",
+  "version": "0.1.0",
   "module": "index.ts",
   "type": "module",
   "private": true,
-  "version": "0.1.0",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "bun run build.ts",
-    "upload": "bun run build.ts && youtrack-workflow upload ./dist --host $YT_HOST --token $YT_TOKEN",
+    "build": "bun run scripts/build.ts",
+    "upload": "bun run scripts/build.ts && bun run scripts/upload.ts",
     "prezip": "rm -rf helpdesk-sync.zip",
-    "zip": "bun run build.ts --zip"
+    "zip": "bun run scripts/build.ts --zip"
   },
   "devDependencies": {
     "@jetbrains/youtrack-scripting-api": "latest",
@@ -21,5 +21,9 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "author": {
+    "name": "Artur Kozubov",
+    "email": "arturkozubov@uteg.sk"
   }
 }
