@@ -24,6 +24,7 @@ for (const entry of entries) {
 
 copyFileSync('./package.json', './dist/package.json')
 copyFileSync('./src/settings.json', './dist/settings.json')
+copyFileSync('./public/logo.svg', './dist/logo.svg')
 
 // Merge package.json fields into manifest.json
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
