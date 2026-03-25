@@ -1,0 +1,19 @@
+{
+  "name": "just-youtrack-helpdesk-ticket-2-issue-sync",
+  "description": "Auto-create and sync linked dev issues from helpdesk tickets",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun run build.ts",
+    "upload": "bun run build.ts && youtrack-workflow upload ./dist --host $YT_HOST --token $YT_TOKEN",
+    "zip": "bun run build.ts && cd dist && zip -r ../helpdesk-sync.zip ."
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@jetbrains/youtrack-scripting-api": "latest",
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
