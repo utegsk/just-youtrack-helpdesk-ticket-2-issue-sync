@@ -4,14 +4,20 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "version": "0.1.0",
   "scripts": {
+    "prebuild": "rm -rf dist",
     "build": "bun run build.ts",
     "upload": "bun run build.ts && youtrack-workflow upload ./dist --host $YT_HOST --token $YT_TOKEN",
-    "zip": "bun run build.ts && cd dist && zip -r ../helpdesk-sync.zip ."
+    "prezip": "rm -rf helpdesk-sync.zip",
+    "zip": "bun run build.ts --zip"
   },
   "devDependencies": {
-    "@types/bun": "latest",
     "@jetbrains/youtrack-scripting-api": "latest",
+    "@types/archiver": "^7.0.0",
+    "@types/bun": "latest",
+    "archiver": "^7.0.1",
+    "youtrack-workflow-api-types": "^0.2.4"
   },
   "peerDependencies": {
     "typescript": "^5"

@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Helpdesk Sync Settings",
+  "description": "Configure mappings between helpdesk projects and target dev projects.",
+  "properties": {
+    "projectMap": {
+      "title": "Project Map",
+      "type": "string",
+      "description": "Comma-separated list of helpdesk-to-target project mappings. Format: FROM-TO,FROM-TO. Example: SURG-CAMASYS,SFI-CAMASYS",
+      "x-scope": "GLOBAL"
+    }
+  },
+  "required": [
+    "projectMap"
+  ]
+}
