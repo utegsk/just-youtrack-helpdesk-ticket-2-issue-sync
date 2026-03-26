@@ -1,0 +1,21 @@
+name: Update Fork
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Runs at 12:00am UTC every day
+    - cron: '0 0 * * *'
+  issue_comment:
+    types: [created]
+
+jobs:
+  update-fork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Shurtu-gal/autoupdate-fork-action@v1.0.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_filter: labelled
+          pr_label: fork-update
+          ignore_conflicts: false
