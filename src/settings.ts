@@ -89,6 +89,21 @@ export function alertComment(message: string): string {
 }
 
 /**
+ * Check whether a user is a helpdesk agent (project team member).
+ * In Helpdesk projects only agents can update comment visibility, so
+ * we must skip syncing when triggered by a non-agent (reporter / customer).
+ */
+export function isHelpdeskAgent(user: any, project: any): boolean {
+  try {
+    const team = project?.team
+    if (!team || !team.name) return false
+    return !!user?.isInGroup(team.name)
+  } catch (_) {
+    return false
+  }
+}
+
+/**
  * Make a comment publicly visible (clear all visibility restrictions).
  * In helpdesk projects, comments created by workflows inherit the default
  * project visibility (e.g. "support-urg Team"), which hides them from reporters.

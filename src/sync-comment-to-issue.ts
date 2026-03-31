@@ -1,4 +1,4 @@
-import { LINK_TYPE_INWARD, LINK_TYPE_OUTWARD, parseProjectMap, getAllMappedProjects, getLinkedIssues, alertComment, copyReferencedAttachments, makeCommentPublic } from './settings'
+import { LINK_TYPE_INWARD, LINK_TYPE_OUTWARD, parseProjectMap, getAllMappedProjects, getLinkedIssues, alertComment, copyReferencedAttachments, makeCommentPublic, isHelpdeskAgent } from './settings'
 
 import entities from '@jetbrains/youtrack-scripting-api/entities'
 
@@ -44,6 +44,14 @@ exports.rule = entities.Issue.onChange({
 
       if (issue.comments.added.isEmpty()) {
         log(ticketId, 'Guard EXIT — no comments added.')
+        return false
+      }
+
+      // Only agents can update comment visibility in Helpdesk projects.
+      // Skip syncing when the comment author is a reporter / customer.
+      const addedComment = issue.comments.added.first()
+      if (addedComment && !isHelpdeskAgent(addedComment.author, issue.project)) {
+        log(ticketId, `Guard EXIT — comment author "${addedComment.author?.fullName ?? 'unknown'}" is not an agent in project ${projectKey}.`)
         return false
       }
 

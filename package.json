@@ -1,7 +1,7 @@
 {
   "name": "just-youtrack-helpdesk-ticket-2-issue-sync",
   "description": "Auto-create and sync linked dev issues from helpdesk tickets",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "module": "index.ts",
   "type": "module",
   "private": true,
