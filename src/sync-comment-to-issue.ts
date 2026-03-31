@@ -1,4 +1,4 @@
-import { LINK_TYPE_INWARD, LINK_TYPE_OUTWARD, parseProjectMap, getAllMappedProjects, getLinkedIssues, alertComment } from './settings'
+import { LINK_TYPE_INWARD, LINK_TYPE_OUTWARD, parseProjectMap, getAllMappedProjects, getLinkedIssues, alertComment, copyReferencedAttachments } from './settings'
 
 import entities from '@jetbrains/youtrack-scripting-api/entities'
 
@@ -19,7 +19,7 @@ function error(id: string, msg: string) {
 exports.rule = entities.Issue.onChange({
   title: 'Sync comments between linked issues (bidirectional)',
 
-  guard: (ctx: any): boolean => {
+  guard: (ctx): boolean => {
     const issue = ctx.issue
     const projectKey: string = issue.project.key
     const ticketId: string = issue.id
@@ -27,8 +27,10 @@ exports.rule = entities.Issue.onChange({
     log(ticketId, `Guard evaluating. Project: ${projectKey}`)
 
     try {
+      // @ts-ignore
       const projectMap = parseProjectMap(ctx.settings?.projectMap, LOG_PREFIX)
       if (!projectMap) {
+        // @ts-ignore
         log(ticketId, `Guard EXIT — projectMap is empty or invalid. Raw value: "${ctx.settings?.projectMap}"`)
         return false
       }
@@ -59,11 +61,12 @@ exports.rule = entities.Issue.onChange({
     }
   },
 
-  action: (ctx: any): void => {
+  action: (ctx): void => {
     const ticket = ctx.issue
     const ticketId: string = ticket.id
 
     try {
+      // @ts-ignore
       const projectMap = parseProjectMap(ctx.settings?.projectMap, LOG_PREFIX)
       if (!projectMap) {
         ticket.addComment(alertComment('projectMap setting is empty or invalid. Configure it in Administration → Apps → helpdesk-sync → Settings.'))
@@ -103,6 +106,17 @@ exports.rule = entities.Issue.onChange({
 
       for (const linkedIssue of linkedIssues) {
         try {
+          // Copy attachments referenced in the comment (images, files) so Markdown renders correctly
+          const attCount = copyReferencedAttachments(
+            comment,
+            ticket,
+            linkedIssue,
+            (msg) => log(ticketId, msg)
+          )
+          if (attCount > 0) {
+            log(ticketId, `Copied ${attCount} attachment(s) to ${linkedIssue.id}`)
+          }
+
           linkedIssue.addComment(prefix + comment.text)
           log(ticketId, `Comment mirrored to ${linkedIssue.id}`)
         } catch (e) {

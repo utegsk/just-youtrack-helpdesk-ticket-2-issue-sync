@@ -88,3 +88,69 @@ export function alertComment(message: string): string {
   return `<details><summary><span style="color:dimgray;">⚠️ Helpdesk sync</span></summary>\n\n${message}\n\n</details>`
 }
 
+/**
+ * Extract attachment filenames referenced in markdown text.
+ * Matches patterns like ![alt](filename.ext) and ![alt](filename.ext){...}
+ */
+export function extractReferencedAttachments(text: string): string[] {
+  const names: string[] = []
+  // Match ![...](name) — only bare filenames, not URLs
+  const regex = /!\[[^\]]*]\(([^)]+)\)/g
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(text)) !== null) {
+    const ref = match[1]!
+    // Skip external URLs
+    if (ref.startsWith('http://') || ref.startsWith('https://') || ref.startsWith('//')) continue
+    names.push(ref)
+  }
+  return names
+}
+
+/**
+ * Copy attachments referenced in a comment from sourceIssue to targetIssue.
+ * Also copies any attachments directly attached to the comment object.
+ * Returns the number of attachments copied.
+ */
+export function copyReferencedAttachments(
+  comment: any,
+  sourceIssue: any,
+  targetIssue: any,
+  logFn?: (msg: string) => void
+): number {
+  let copied = 0
+  const copiedNames = new Set<string>()
+
+  // 1. Copy comment-level attachments
+  if (comment.attachments && !comment.attachments.isEmpty()) {
+    comment.attachments.forEach((att: any) => {
+      try {
+        targetIssue.addAttachment(att.content, att.name, undefined, att.mimeType)
+        copiedNames.add(att.name)
+        copied++
+        logFn?.(`Copied comment attachment: ${att.name}`)
+      } catch (e) {
+        logFn?.(`Failed to copy comment attachment ${att.name}: ${e}`)
+      }
+    })
+  }
+
+  // 2. Copy issue-level attachments referenced in the comment text
+  const referencedNames = extractReferencedAttachments(comment.text || '')
+  if (referencedNames.length > 0) {
+    sourceIssue.attachments.forEach((att: any) => {
+      if (referencedNames.includes(att.name) && !copiedNames.has(att.name)) {
+        try {
+          targetIssue.addAttachment(att.content, att.name, undefined, att.mimeType)
+          copiedNames.add(att.name)
+          copied++
+          logFn?.(`Copied referenced attachment: ${att.name}`)
+        } catch (e) {
+          logFn?.(`Failed to copy referenced attachment ${att.name}: ${e}`)
+        }
+      }
+    })
+  }
+
+  return copied
+}
+

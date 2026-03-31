@@ -20,7 +20,7 @@ function isBundleType(typeName: string): boolean {
 exports.rule = entities.Issue.onChange({
   title: 'Sync fields between linked issues (bidirectional)',
 
-  guard: (ctx: any): boolean => {
+  guard: (ctx): boolean => {
     const issue = ctx.issue
     const projectKey: string = issue.project.key
     const ticketId: string = issue.id
@@ -28,8 +28,10 @@ exports.rule = entities.Issue.onChange({
     log(ticketId, `Guard evaluating. Project: ${projectKey}`)
 
     try {
+      // @ts-ignore
       const projectMap = parseProjectMap(ctx.settings?.projectMap, LOG_PREFIX)
       if (!projectMap) {
+        // @ts-ignore
         log(ticketId, `Guard EXIT — projectMap is empty or invalid. Raw value: "${ctx.settings?.projectMap}"`)
         return false
       }
@@ -68,11 +70,12 @@ exports.rule = entities.Issue.onChange({
     }
   },
 
-  action: (ctx: any): void => {
+  action: (ctx): void => {
     const ticket = ctx.issue
     const ticketId: string = ticket.id
 
     try {
+      // @ts-ignore
       const projectMap = parseProjectMap(ctx.settings?.projectMap, LOG_PREFIX)
       if (!projectMap) {
         ticket.addComment(alertComment('projectMap setting is empty or invalid. Configure it in Administration → Apps → helpdesk-sync → Settings.'))
@@ -128,6 +131,7 @@ exports.rule = entities.Issue.onChange({
 
             if (isBundleType(fieldType)) {
               // Bundle fields: resolve value by name in target project
+              // @ts-ignore
               const valueName: string = srcValue.name
               // Skip if already the same (prevent infinite loop)
               if (linkedIssue.fields[fieldName]?.name === valueName) {
@@ -144,6 +148,7 @@ exports.rule = entities.Issue.onChange({
             } else {
               // User / simple fields: skip if already the same (prevent infinite loop)
               const currentValue = linkedIssue.fields[fieldName]
+              // @ts-ignore
               if (currentValue === srcValue || (currentValue?.id != null && currentValue.id === srcValue.id)) {
                 log(ticketId, `"${fieldName}" already same on ${linkedIssue.id}, skipping.`)
                 continue
