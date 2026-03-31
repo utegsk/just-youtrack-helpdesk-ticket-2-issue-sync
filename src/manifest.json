@@ -2,11 +2,5 @@
   "$schema": "https://json.schemastore.org/youtrack-app.json",
   "name": "helpdesk-sync",
   "title": "Helpdesk Sync",
-  "icon": "logo.svg",
-  "description": "Auto-creates and syncs linked dev issues from helpdesk tickets",
-  "version": "0.1.0",
-  "vendor": {
-    "name": "United Technologies Group s.r.o.",
-    "email": "arturkozubov@uteg.sk"
-  }
+  "icon": "logo.svg"
 }

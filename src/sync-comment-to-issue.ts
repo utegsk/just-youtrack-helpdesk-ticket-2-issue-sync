@@ -1,4 +1,4 @@
-import { LINK_TYPE_INWARD, LINK_TYPE_OUTWARD, parseProjectMap, getAllMappedProjects, getLinkedIssues, alertComment, copyReferencedAttachments } from './settings'
+import { LINK_TYPE_INWARD, LINK_TYPE_OUTWARD, parseProjectMap, getAllMappedProjects, getLinkedIssues, alertComment, copyReferencedAttachments, makeCommentPublic } from './settings'
 
 import entities from '@jetbrains/youtrack-scripting-api/entities'
 
@@ -117,8 +117,9 @@ exports.rule = entities.Issue.onChange({
             log(ticketId, `Copied ${attCount} attachment(s) to ${linkedIssue.id}`)
           }
 
-          linkedIssue.addComment(prefix + comment.text)
-          log(ticketId, `Comment mirrored to ${linkedIssue.id}`)
+          const mirroredComment = linkedIssue.addComment(prefix + comment.text)
+          makeCommentPublic(mirroredComment)
+          log(ticketId, `Comment mirrored to ${linkedIssue.id} (public)`)
         } catch (e) {
           error(ticketId, `Failed to mirror comment to ${linkedIssue.id}: ${e}`)
           try {

@@ -89,6 +89,27 @@ export function alertComment(message: string): string {
 }
 
 /**
+ * Make a comment publicly visible (clear all visibility restrictions).
+ * In helpdesk projects, comments created by workflows inherit the default
+ * project visibility (e.g. "support-urg Team"), which hides them from reporters.
+ */
+export function makeCommentPublic(comment: any): void {
+  try {
+    comment.permittedGroup = null
+  } catch (_) { /* field may not exist */ }
+  try {
+    if (comment.permittedGroups && !comment.permittedGroups.isEmpty()) {
+      comment.permittedGroups.clear()
+    }
+  } catch (_) { /* ignore */ }
+  try {
+    if (comment.permittedUsers && !comment.permittedUsers.isEmpty()) {
+      comment.permittedUsers.clear()
+    }
+  } catch (_) { /* ignore */ }
+}
+
+/**
  * Extract attachment filenames referenced in markdown text.
  * Matches patterns like ![alt](filename.ext) and ![alt](filename.ext){...}
  */

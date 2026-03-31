@@ -1,7 +1,7 @@
 {
   "name": "just-youtrack-helpdesk-ticket-2-issue-sync",
   "description": "Auto-create and sync linked dev issues from helpdesk tickets",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -22,7 +22,13 @@
     "typescript": "^5"
   },
   "author": {
-    "name": "Artur Kozubov",
-    "email": "arturkozubov@uteg.sk"
-  }
+    "name": "United Technologies Group s.r.o.",
+    "email": "developer@uteg.sk"
+  },
+  "contributors": [
+    {
+      "name": "Artur Kozubov",
+      "email": "arturkozubov@uteg.sk"
+    }
+  ]
 }
