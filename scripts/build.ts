@@ -60,7 +60,7 @@ if (process.argv.includes('--zip')) {
     archive.on('error', reject)
 
     archive.pipe(output)
-    archive.directory('./dist', false)
+    archive.directory('./dist', 'helpdesk-sync')
     archive.finalize()
   })
 }

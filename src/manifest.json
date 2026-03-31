@@ -6,7 +6,7 @@
   "description": "Auto-creates and syncs linked dev issues from helpdesk tickets",
   "version": "0.1.0",
   "vendor": {
-    "name": "Your Company",
-    "email": "admin@yourcompany.com"
+    "name": "United Technologies Group s.r.o.",
+    "email": "arturkozubov@uteg.sk"
   }
 }
